@@ -1,12 +1,11 @@
-//creacion de servidor
-//importar funciones globales
-
 const http = require("http"); //busca modulo global
 const fs = require("fs");
+const { buffer } = require("stream/consumers");
 
 const server = http.createServer((req, res) => {
   const url = req.url;
   const method = req.method;
+
   if (url === "/") {
     //process.exit()
     //objetos response y programar directamente html
@@ -20,7 +19,16 @@ const server = http.createServer((req, res) => {
     return res.end();
   }
   if (url === "/message" && method === "POST") {
-    fs.writeFileSync("message.txt", "DUMMY");
+    const body = [];
+    req.on("data", (chunk) => {
+      console.log(chunk);
+      body.push(chunk);
+    });
+    req.on("end", () => {
+      const parsedBody = Buffer.concat(body).toString();
+      let message = parsedBody.split("=")[1];
+      fs.writeFileSync("message.txt", (message += "\n" + message));
+    });
     res.statusCode = 302;
     res.setHeader("Location", "/");
     return res.end();
@@ -33,5 +41,4 @@ const server = http.createServer((req, res) => {
   res.end();
 });
 
-server.listen(3000); //comienza proceso de escucha para peticion
-//server.listen(puerto)
+server.listen(3000);
