@@ -11,17 +11,14 @@ const server = http.createServer((req, res) => {
     //objetos response y programar directamente html
     res.setHeader("Content-Type", "text/html");
     res.write("<html>");
-    res.write("<head><title> Enter message </title></head>");
+    res.write("<head><title> Assigment 1 </title></head>");
     res.write(
-      '<body><p>Enter Message</p><form action="/message1" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>',
-    );
-    res.write(
-      '<body><p>Otro mensaje</p><form action="/message2" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>',
+      '<body><p>Enter Username</p><form action="/create-user" method="POST"><input type="text" name="username"><button type="submit">Send</button></form></body>',
     );
     res.write("</html>");
     return res.end();
   }
-  if (url === "/message1" && method === "POST") {
+  if (url === "/create-user" && method === "POST") {
     const body = [];
     req.on("data", (chunk) => {
       console.log(chunk);
@@ -30,23 +27,7 @@ const server = http.createServer((req, res) => {
     req.on("end", () => {
       const parsedBody = Buffer.concat(body).toString();
       let message = parsedBody.split("=")[1];
-      fs.writeFileSync("message.txt", message);
-    });
-    res.statusCode = 302;
-    res.setHeader("Location", "/");
-
-    return res.end();
-  }
-  if (url === "/message2" && method === "POST") {
-    const body = [];
-    req.on("data", (chunk) => {
-      console.log(chunk);
-      body.push(chunk);
-    });
-    req.on("end", () => {
-      const parsedBody = Buffer.concat(body).toString();
-      let message2 = parsedBody.split("=")[1];
-      fs.writeFileSync("message2.txt", message2);
+      fs.writeFileSync("Assignment 1.txt", message);
     });
     res.statusCode = 302;
     res.setHeader("Location", "/");
